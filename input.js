@@ -1,4 +1,8 @@
-let connection;
+console.clear();
+let connection, awaiting_input;
+readline = require("readline")
+const rl = readline.createInterface(
+  process.stdin, process.stdout);
 
 const setupInput = function (conn) {
   connection = conn;
@@ -11,10 +15,12 @@ const setupInput = function (conn) {
 };
 
 const handleUserInput = function (key) {
+  if (awaiting_input) {
+    return
+  }
   switch (key) {
     case '\u0003':
       process.exit();
-
     case 'w':
       connection.write("Move: up");
       break
@@ -27,6 +33,13 @@ const handleUserInput = function (key) {
     case 'd':
       connection.write("Move: right");
       break;
+    case 't':
+      awaiting_input = true;
+      console.clear();
+      rl.question('Enter message: ', (message) => {
+        connection.write("Say: " + message);
+        awaiting_input = false;
+      });
   }
 };
 
